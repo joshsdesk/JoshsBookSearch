@@ -1,17 +1,14 @@
-import express, { type Request, type Response } from 'express';
-import path from 'node:path';
-import { ApolloServer } from '@apollo/server';
-import { expressMiddleware } from '@apollo/server/express4';
-import db from './config/connection.js';
-import routes from './routes/index.js';
-import typeDefs from './schemas/typeDefs.js';
-import resolvers from './schemas/resolvers.js';
-import { getUserFromToken } from './services/auth.js';
+import express from "express";
+import path from "node:path";
+import type { Request, Response } from "express";
+import db from "./config/connection.js";
+import { ApolloServer } from "@apollo/server"; // Note: Import from @apollo/server-express
+import { expressMiddleware } from "@apollo/server/express4";
+import { typeDefs, resolvers } from "./schema/index.js";
+import { authenticateToken } from "./services/auth.js";
 
 const __dirname = path.resolve();
-const PORT = process.env.PORT || 3001;
 
-// ✅ Apollo v4 Setup
 const server = new ApolloServer({
   typeDefs,
   resolvers,
@@ -20,40 +17,32 @@ const server = new ApolloServer({
 
 const startApolloServer = async () => {
   await server.start();
+  await db();
 
+  const PORT = process.env.PORT || 3001;
   const app = express();
-  app.use(express.urlencoded({ extended: true }));
+
+  app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
 
-  // ✅ GraphQL Middleware
   app.use(
-    '/graphql',
-    expressMiddleware(server, {
-      context: async ({ req }: { req: Request }) => {
-        const user = getUserFromToken(req);
-        return { user };
-      },
+    "/graphql",
+    expressMiddleware(server as any, {
+      context: authenticateToken as any,
     })
   );
 
-  // ✅ API Routes
-  app.use(routes);
+  if (process.env.NODE_ENV === "production") {
+    app.use(express.static(path.join(__dirname, "../client/dist")));
 
-  // ✅ Serve Frontend AFTER all other routes
-  if (process.env.NODE_ENV === 'production') {
-    const clientPath = path.join(__dirname, 'client', 'dist');
-    app.use(express.static(clientPath));
-
-    app.get('*', (_req: Request, res: Response) => {
-      res.sendFile(path.join(clientPath, 'index.html'));
+    app.get("*", (_req: Request, res: Response) => {
+      res.sendFile(path.join(__dirname, "../client/dist/index.html"));
     });
   }
 
-  db.once('open', () => {
-    app.listen(PORT, () => {
-      console.log(`🌍 Server running at http://localhost:${PORT}`);
-      console.log(`🚀 GraphQL ready at http://localhost:${PORT}/graphql`);
-    });
+  app.listen(PORT, () => {
+    console.log(`API server running on port ${PORT}!`);
+    console.log(`Use GraphQL at http://localhost:${PORT}/graphql`);
   });
 };
 

@@ -2,12 +2,16 @@ import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 
-import { createUser } from '../utils/API';
+//import { createUser } from '../utils/API';
+import { ADD_USER } from "../utils/mutation";
 import Auth from '../utils/auth';
 import type { User } from '../models/User';
+import { useMutation } from "@apollo/client";
 
 // biome-ignore lint/correctness/noEmptyPattern: <explanation>
-const SignupForm = ({}: { handleModalClose: () => void }) => {
+const SignupForm = ({ }: { handleModalClose: () => void }) => {
+  
+     const [addUser] = useMutation(ADD_USER);
   // set initial form state
   const [userFormData, setUserFormData] = useState<User>({ username: '', email: '', password: '', savedBooks: [] });
   // set state for form validation
@@ -31,8 +35,23 @@ const SignupForm = ({}: { handleModalClose: () => void }) => {
     }
 
     try {
+      const { data } = await addUser({
+        variables: {
+          input: {
+            username: userFormData.username,
+            email: userFormData.email,
+            password: userFormData.password,
+           }
+        },
+      });
+      console.log(data);
+      Auth.login(data.addUser.token);
+    } catch (err) {
+      console.error(err);
+      setShowAlert(true);
+    }
+   /* try {
       const response = await createUser(userFormData);
-
       if (!response.ok) {
         throw new Error('something went wrong!');
       }
@@ -42,14 +61,7 @@ const SignupForm = ({}: { handleModalClose: () => void }) => {
     } catch (err) {
       console.error(err);
       setShowAlert(true);
-    }
-
-    setUserFormData({
-      username: '',
-      email: '',
-      password: '',
-      savedBooks: [],
-    });
+    }*/
   };
 
   return (

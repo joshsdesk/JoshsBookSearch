@@ -16,7 +16,7 @@ const resolvers = {
   Mutation: {
     async addUser(_: any, { username, email, password }: any) {
       const user = await User.create({ username, email, password });
-      const token = signToken({ username: user.username, email: user.email, _id: user._id });
+      const token = signToken(user.username, user.email, user._id);
       return { token, user };
     },
 
@@ -31,7 +31,7 @@ const resolvers = {
         throw new AuthenticationError('Incorrect credentials');
       }
 
-      const token = signToken({ username: user.username, email: user.email, _id: user._id });
+      const token = signToken(user.username, user.email, user._id);
       return { token, user };
     },
 
@@ -62,6 +62,3 @@ const resolvers = {
 };
 
 export default resolvers;
-
-
-// query Me {me {  _id,    username,   email,    bookCount,    savedBooks {      bookId,      title,      description    }  }
