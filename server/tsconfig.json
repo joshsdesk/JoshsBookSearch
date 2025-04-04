@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    /* Modules */
+    "rootDir": "src",
+    "outDir": "dist",
+    "verbatimModuleSyntax": true  // ✅ ADD THIS LINE
+    // "noEmitOnError": true
+  },
+  "include": ["src"],
+  "typeRoots": ["./node_modules/@types", "./src/types"]
+}
