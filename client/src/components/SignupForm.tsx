@@ -38,20 +38,21 @@ const SignupForm = ({ handleModalClose }: AuthFormProps) => {
     try {
       const { data } = await addUser({
         variables: {
-          username: userFormData.username,
-          email: userFormData.email,
-          password: userFormData.password,
-        },
+          input: {
+            username: userFormData.username,
+            email: userFormData.email,
+            password: userFormData.password,
+          }
+        }
       });
 
       Auth.login(data.addUser.token);
-      handleModalClose(); // ✅ close the modal on success
+      handleModalClose();
+      setUserFormData({ username: '', email: '', password: '' });
     } catch (err) {
       console.error(err);
       setShowAlert(true);
     }
-
-    setUserFormData({ username: '', email: '', password: '' });
   };
 
   return (
