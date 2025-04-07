@@ -9,7 +9,7 @@ export default defineConfig({
     open: true,
     proxy: {
       '/graphql': {
-        target: 'http://localhost:3001',
+        target: 'http://127.0.0.1:3001', // ✅ use IPv4 to fix ENOBUFS
         secure: false,
         changeOrigin: true
       }

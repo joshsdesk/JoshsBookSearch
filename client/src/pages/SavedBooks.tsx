@@ -1,7 +1,7 @@
 import { Container, Card, Button, Row, Col } from "react-bootstrap";
 
 import { GET_ME } from "../utils/queries";
-import { REMOVE_BOOK } from "../utils/mutation";
+import { REMOVE_BOOK } from "../utils/mutations";
 import { useQuery } from "@apollo/client";
 import Auth from "../utils/auth";
 import { useMutation } from "@apollo/client";
