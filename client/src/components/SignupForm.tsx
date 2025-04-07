@@ -5,8 +5,6 @@ import { Form, Button, Alert } from 'react-bootstrap';
 //import { createUser } from '../utils/API';
 import { ADD_USER } from "../utils/mutation";
 import Auth from '../utils/auth';
-import type { User } from '../models/User';
-import { useMutation } from "@apollo/client";
 
 // biome-ignore lint/correctness/noEmptyPattern: <explanation>
 const SignupForm = ({ }: { handleModalClose: () => void }) => {
