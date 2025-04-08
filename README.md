@@ -69,8 +69,16 @@ Josh's Book Search is a full-stack MERN application that allows users to search 
 [CLICK ME](https://joshsbooksearch.onrender.com)
 
 ---
+## 🌐 ![GitHub](https://img.shields.io/badge/-GitHub-181717?logo=github&logoColor=white)
+
+[CLICK ME](https://github.com/joshsdesk/JoshsBookSearch)
 
 ## 📬 Contact
 
 Created by Josh — proudly built from the ground up.
 
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
